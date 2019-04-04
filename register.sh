@@ -1,0 +1,12 @@
+docker-compose exec runner gitlab-runner register \
+    --non-interactive \
+    --url "http://gitlab/" \
+    --registration-token "token" \
+    --executor "docker" \
+    --docker-image "python:3-alpine" \
+    --description "docker-runner" \
+    --tag-list "docker" \
+    --run-untagged \
+    --locked="false" \
+    --docker-network-mode "server_default" \
+    --docker-privileged
