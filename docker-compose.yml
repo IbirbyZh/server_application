@@ -1,21 +1,24 @@
 version: '3.2'
 services:
-    gitlab:
-       image: 'gitlab/gitlab-ce:latest'
-       restart: always
-       hostname: 'gitlab'
-       environment:
-           GITLAB_OMNIBUS_CONFIG: |
-            gitlab_rails['initial_root_password'] = "password"
-            gitlab_rails['initial_shared_runners_registration_token'] = "token"
-       ports: ["443", "1000:80", "22", "4567:4567"]
-       volumes:
-         - '/Users/zhshishkin/study/mipt/server/docker-data/gitlab/config:/etc/gitlab'
-         - '/Users/zhshishkin/study/mipt/server/docker-data/gitlab/logs:/var/log/gitlab'
-         - '/Users/zhshishkin/study/mipt/server/docker-data/gitlab/data:/var/opt/gitlab'
-    runner:
-       image: 'gitlab/gitlab-runner:latest'
-       restart: always
-       volumes:
-         - '/Users/zhshishkin/study/mipt/server/docker-data/gitlab-runner/config:/etc/gitlab-runner'
-         - '/var/run/docker.sock:/var/run/docker.sock'
+  gitlab:
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always
+    hostname: 'gitlab'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        gitlab_rails['initial_root_password'] = "${GITLAB_PASSWORD}"
+        gitlab_rails['initial_shared_runners_registration_token'] = "${GITLAB_RUNNER_TOKEN}"
+    ports: ["443", "1000:80", "22", "4567:4567"]
+    volumes:
+      - "${DOCKER_DATA_PATH}/gitlab/config:/etc/gitlab"
+      - "${DOCKER_DATA_PATH}/gitlab/logs:/var/log/gitlab"
+      - "${DOCKER_DATA_PATH}/gitlab/data:/var/opt/gitlab"
+  runner:
+    image: 'gitlab/gitlab-runner:latest'
+    restart: always
+    volumes:
+      - "${DOCKER_DATA_PATH}/gitlab-runner/config:/etc/gitlab-runner"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+  check_system:
+    restart: always
+
