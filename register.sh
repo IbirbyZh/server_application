@@ -1,7 +1,7 @@
 docker-compose exec runner gitlab-runner register \
     --non-interactive \
     --url "http://gitlab/" \
-    --registration-token "token" \
+    --registration-token "$GITLAB_RUNNER_TOKEN" \
     --executor "docker" \
     --docker-image "python:3-alpine" \
     --description "docker-runner" \
