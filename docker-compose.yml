@@ -3,12 +3,12 @@ services:
   gitlab:
     image: 'gitlab/gitlab-ce:latest'
     restart: always
-    hostname: 'gitlab'
+    hostname: "${SERVER_IP}:8080"
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         gitlab_rails['initial_root_password'] = "${GITLAB_PASSWORD}"
         gitlab_rails['initial_shared_runners_registration_token'] = "${GITLAB_RUNNER_TOKEN}"
-    ports: ["443", "1000:80", "22", "4567:4567"]
+    ports: ["443", "8080:80", "22", "4567:4567"]
     volumes:
       - "${DOCKER_DATA_PATH}/gitlab/config:/etc/gitlab"
       - "${DOCKER_DATA_PATH}/gitlab/logs:/var/log/gitlab"
@@ -21,4 +21,12 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
   check_system:
     restart: always
+    build: check_system
+    environment:
+      - GITLAB_API_TOKEN
+      - SERVER_IP
+    volumes:
+      - "${DOCKER_DATA_PATH}/check-system/secrets:/secrets"
+    ports:
+      - "5000:5000"
 
